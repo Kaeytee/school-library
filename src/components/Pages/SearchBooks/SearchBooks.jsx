@@ -1,40 +1,96 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './SearchBooks.css';
-
+import React, { useState, useEffect } from 'react';
+import {
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBCardImage,
+  MDBBtn,
+} from 'mdb-react-ui-kit';
+import './SearchBooks.css'
 const SearchBooks = () => {
-  const [title, setTitle] = useState('');
   const [books, setBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const response = await fetch(`http://localhost/school-library/search_books.php?title=${title}`);
-    const data = await response.json();
-    setBooks(data);
+  // Fetch books from the backend
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = (query = '') => {
+    const url = query
+      ? `http://localhost/backend/books.php?query=${query}`
+      : `http://localhost/backend/books.php`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setBooks(data);
+        setFilteredBooks(data);
+      })
+      .catch((error) => console.error('Error fetching books:', error));
   };
 
+  // Function to handle the search input and filter the books
+  const handleSearch = (event) => {
+    const searchValue = event.target.value;
+    setSearchTerm(searchValue);
+
+    // Fetch filtered books when search value is updated
+    fetchBooks(searchValue);
+  };
+
+
   return (
-    <div className="search-books-container">
-      <h2>Search for Books</h2>
-      <form onSubmit={handleSearch}>
+    <MDBContainer className="my-5">
+      <h1 className="text-center mb-4">Search Books</h1>
+
+      {/* Search input */}
+      <div className="d-flex justify-content-center mb-4">
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter book title"
-          required
+          className="form-control w-50"
+          placeholder="Search by title, author, genre, or ISBN"
+          value={searchTerm}
+          onChange={handleSearch}
         />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {books.map((book) => (
-          <li key={book.book_id}>{book.title} by {book.author}</li>
-        ))}
-      </ul>
-      
-      {/* Add a link to register if the user is not logged in */}
-      <p>New here? <Link to="/register">Register as a new member</Link></p>
-    </div>
+      </div>
+
+      {/* Book cards displayed in rows */}
+      <MDBRow>
+        {filteredBooks.length > 0 ? (
+          filteredBooks.map((book) => (
+            <MDBCol md="4" className="mb-4" key={book.book_id}>
+              <MDBCard>
+                <MDBCardImage 
+                  src="https://via.placeholder.com/150" 
+                  alt="Book cover" 
+                  position="top" 
+                  className="w-100"
+                />
+                <MDBCardBody>
+                  <MDBCardTitle>{book.title}</MDBCardTitle>
+                  <MDBCardText>
+                    <strong>Author:</strong> {book.author} <br />
+                    <strong>Genre:</strong> {book.genre} <br />
+                    <strong>ISBN:</strong> {book.isbn} <br />
+                    <strong>Available Copies:</strong> {book.available_copies} <br />
+                    <strong>Publication Year:</strong> {book.publication_year}
+                  </MDBCardText>
+                  <MDBBtn color="primary">Borrow</MDBBtn>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+          ))
+        ) : (
+          <p className="text-center">No books found.</p>
+        )}
+      </MDBRow>
+    </MDBContainer>
   );
 };
 

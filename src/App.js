@@ -3,25 +3,26 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Pages/Login/Login';
 import Register from './components/Pages/Register/Register';
 import SearchBooks from './components/Pages/SearchBooks/SearchBooks';
+import Home from './components/Pages/Home/Home';
 import Navbar from './components/Pages/NavBar/NavBar';
 import Footer from './components/Pages/Footer/Footer';
-import Home from './components/Pages/Home/Home';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
     <Router>
-      <div className="app-container">
+      <div className="App">
         <Navbar />
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/search" element={<SearchBooks />} />
+          <Route path="/search-books" element={<SearchBooks />} />
         </Routes>
-        <Footer />  {/* Add Footer at the bottom */}
+        <Footer />
       </div>
     </Router>
   );
-};
+}
 
 export default App;
