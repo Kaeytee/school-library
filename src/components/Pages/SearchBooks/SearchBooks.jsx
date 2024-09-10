@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './SearchBooks.css'; // Importing the CSS file
+import { Link } from 'react-router-dom';
+import './SearchBooks.css';
 
 const SearchBooks = () => {
   const [title, setTitle] = useState('');
@@ -30,6 +31,9 @@ const SearchBooks = () => {
           <li key={book.book_id}>{book.title} by {book.author}</li>
         ))}
       </ul>
+      
+      {/* Add a link to register if the user is not logged in */}
+      <p>New here? <Link to="/register">Register as a new member</Link></p>
     </div>
   );
 };

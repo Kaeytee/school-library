@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Register.css'; // Importing the CSS file
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -13,7 +12,8 @@ const Register = () => {
     
     const member = { name, grade_class: gradeClass, contact_information: contactInfo, role };
 
-    const response = await fetch('http://localhost/school-library/register_member.php', {
+    // Make API request to the PHP backend
+    const response = await fetch('http://localhost:8000/register_member.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,6 +25,7 @@ const Register = () => {
     setMessage(data.message);
 
     if (data.success) {
+      // Reset form
       setName('');
       setGradeClass('');
       setContactInfo('');
@@ -36,31 +37,25 @@ const Register = () => {
     <div className="register-container">
       <h2>Register New Member</h2>
       <form onSubmit={handleSubmit}>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <label>Grade/Class (Leave blank for staff):</label>
-        <input
-          type="text"
-          value={gradeClass}
-          onChange={(e) => setGradeClass(e.target.value)}
-        />
-        <label>Contact Information:</label>
-        <input
-          type="text"
-          value={contactInfo}
-          onChange={(e) => setContactInfo(e.target.value)}
-          required
-        />
-        <label>Role:</label>
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="student">Student</option>
-          <option value="staff">Staff</option>
-        </select>
+        <div>
+          <label>Name:</label>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div>
+          <label>Grade/Class:</label>
+          <input type="text" value={gradeClass} onChange={(e) => setGradeClass(e.target.value)} required />
+        </div>
+        <div>
+          <label>Contact Information:</label>
+          <input type="text" value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} required />
+        </div>
+        <div>
+          <label>Role:</label>
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+        </div>
         <button type="submit">Register</button>
       </form>
       {message && <p>{message}</p>}

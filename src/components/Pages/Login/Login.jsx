@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Login.css'; // Importing the CSS file
+import './Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -7,9 +7,9 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the login logic here, such as sending data to the backend
     console.log('Username:', username);
     console.log('Password:', password);
+    // Here you would typically handle the login logic, such as sending a request to the backend.
   };
 
   return (
