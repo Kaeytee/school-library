@@ -1,0 +1,24 @@
+.admin-dashboard {
+    text-align: center;
+  }
+  
+  .admin-dashboard .card-body {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 20px;
+  }
+  
+  .admin-dashboard h2 {
+    font-size: 3rem;
+    color: #333;
+  }
+  
+  .admin-dashboard .btn {
+    width: 100%;
+  }
+  
+  .admin-dashboard .fw-bold {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  

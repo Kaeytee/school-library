@@ -9,22 +9,25 @@ import {
   MDBCardText,
   MDBCardImage,
   MDBBtn,
+  MDBInput
 } from 'mdb-react-ui-kit';
-import './SearchBooks.css'
+import './SearchBooks.css';
+
 const SearchBooks = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBooks, setFilteredBooks] = useState([]);
 
-  // Fetch books from the backend
+  // Fetch books from the backend when component mounts
   useEffect(() => {
     fetchBooks();
   }, []);
 
+  // Function to fetch books from the backend with an optional search query
   const fetchBooks = (query = '') => {
     const url = query
-      ? `http://localhost/backend/books.php?query=${query}`
-      : `http://localhost/backend/books.php`;
+      ? `http://localhost:5000/backend/books.php?query=${query}` // Ensure correct port number
+      : `http://localhost:5000/backend/books.php`; // Ensure correct port number
 
     fetch(url)
       .then((response) => response.json())
@@ -35,59 +38,58 @@ const SearchBooks = () => {
       .catch((error) => console.error('Error fetching books:', error));
   };
 
-  // Function to handle the search input and filter the books
+  // Handle search input and fetch filtered books
   const handleSearch = (event) => {
     const searchValue = event.target.value;
     setSearchTerm(searchValue);
 
-    // Fetch filtered books when search value is updated
+    // Fetch filtered books based on search value
     fetchBooks(searchValue);
   };
 
-
   return (
-    <MDBContainer className="my-5">
-      <h1 className="text-center mb-4">Search Books</h1>
-
+    <MDBContainer>
       {/* Search input */}
-      <div className="d-flex justify-content-center mb-4">
-        <input
-          type="text"
-          className="form-control w-50"
-          placeholder="Search by title, author, genre, or ISBN"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </div>
+      <MDBRow className="my-4">
+        <MDBCol md="12">
+          <MDBInput
+            label="Search Books"
+            id="searchInput"
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </MDBCol>
+      </MDBRow>
 
-      {/* Book cards displayed in rows */}
+      {/* Display books in a grid */}
       <MDBRow>
         {filteredBooks.length > 0 ? (
           filteredBooks.map((book) => (
-            <MDBCol md="4" className="mb-4" key={book.book_id}>
+            <MDBCol md="4" key={book.book_id} className="mb-4">
               <MDBCard>
-                <MDBCardImage 
-                  src="https://via.placeholder.com/150" 
-                  alt="Book cover" 
-                  position="top" 
-                  className="w-100"
+                {/* Book Image (Fallback if no image is provided) */}
+                <MDBCardImage
+                  src={book.image || 'https://via.placeholder.com/150'}
+                  position="top"
+                  alt={book.title}
                 />
                 <MDBCardBody>
                   <MDBCardTitle>{book.title}</MDBCardTitle>
                   <MDBCardText>
                     <strong>Author:</strong> {book.author} <br />
-                    <strong>Genre:</strong> {book.genre} <br />
-                    <strong>ISBN:</strong> {book.isbn} <br />
-                    <strong>Available Copies:</strong> {book.available_copies} <br />
-                    <strong>Publication Year:</strong> {book.publication_year}
+                    <strong>Genre:</strong> {book.genre || 'N/A'} <br />
+                    <strong>Available Copies:</strong> {book.available_copies}
                   </MDBCardText>
-                  <MDBBtn color="primary">Borrow</MDBBtn>
+                  <MDBBtn href="#">Read More</MDBBtn>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
           ))
         ) : (
-          <p className="text-center">No books found.</p>
+          <MDBCol md="12">
+            <h5>No books found</h5>
+          </MDBCol>
         )}
       </MDBRow>
     </MDBContainer>

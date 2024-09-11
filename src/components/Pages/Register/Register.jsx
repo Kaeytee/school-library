@@ -35,7 +35,7 @@ function Register() {
       return;
     }
     // POST request to your backend for registration
-    fetch('http://localhost:5000/register', {
+    fetch('http://localhost:5000/backend/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ function Register() {
               </MDBBtn>
 
               <p className="mb-5 pb-lg-2" style={{ color: '#393f81' }}>
-                Already have an account? <Link to="/login" style={{ color: '#393f81' }}>Login</Link>
+                Already have an account? <Link to="/login" style={{ color: '#393f81' }}>Login here</Link>
               </p>
 
               <div className='d-flex flex-row justify-content-start'>
