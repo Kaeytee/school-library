@@ -10,7 +10,7 @@ import {
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -23,6 +23,8 @@ function Register() {
     role: 'student', // Default role is 'student'
   });
 
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -34,28 +36,33 @@ function Register() {
       alert("Passwords do not match");
       return;
     }
-    // POST request to your backend for registration
-    fetch('http://localhost:5000/backend/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Registration successful", data);
-    })
-    .catch(error => {
-      console.error("Error:", error);
-    });
+
+    fetch('http://localhost/backend/register.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),  // Ensure all form data is sent
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert('Registration successful');
+            navigate('/login');  // Redirect to login after success
+          } else {
+            alert(data.message || 'Registration failed');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('There was an error with the registration. Please try again.');
+        });
   };
 
   return (
     <MDBContainer className="my-5">
       <MDBCard>
         <MDBRow className='g-0'>
-          {/* Left Image Column */}
           <MDBCol md='6'>
             <MDBCardImage 
               src='https://images.pexels.com/photos/14520333/pexels-photo-14520333.jpeg?auto=compress&cs=tinysrgb&w=400' 
@@ -64,11 +71,8 @@ function Register() {
             />
           </MDBCol>
 
-          {/* Right Form Column */}
           <MDBCol md='6'>
             <MDBCardBody className='d-flex flex-column'>
-
-              {/* Logo and Icon */}
               <div className='d-flex flex-row mt-2'>
                 <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }}/>
                 <span className="h1 fw-bold mb-0">School Library</span>
@@ -78,7 +82,6 @@ function Register() {
                 Create a Library Account Today
               </h5>
 
-              {/* Role Selection (Student or Staff) */}
               <div className="mb-4">
                 <label className="mb-2">I am a: </label>
                 <select 
@@ -92,7 +95,6 @@ function Register() {
                 </select>
               </div>
 
-              {/* Username Input */}
               <MDBInput 
                 wrapperClass='mb-4' 
                 label='Username' 
@@ -104,7 +106,6 @@ function Register() {
                 onChange={handleInputChange}
               />
 
-              {/* Password Input */}
               <MDBInput 
                 wrapperClass='mb-4' 
                 label='Password' 
@@ -116,7 +117,6 @@ function Register() {
                 onChange={handleInputChange}
               />
 
-              {/* Confirm Password Input */}
               <MDBInput 
                 wrapperClass='mb-4' 
                 label='Confirm Password' 
@@ -128,7 +128,6 @@ function Register() {
                 onChange={handleInputChange}
               />
 
-              {/* Full Name Input */}
               <MDBInput 
                 wrapperClass='mb-4' 
                 label='Full Name' 
@@ -140,7 +139,6 @@ function Register() {
                 onChange={handleInputChange}
               />
 
-              {/* Grade/Class Input for Students Only */}
               {formData.role === 'student' && (
                 <MDBInput 
                   wrapperClass='mb-4' 
@@ -153,7 +151,6 @@ function Register() {
                 />
               )}
 
-              {/* Contact Information Input */}
               <MDBInput 
                 wrapperClass='mb-4' 
                 label='Contact Information' 
@@ -165,7 +162,6 @@ function Register() {
                 onChange={handleInputChange}
               />
 
-              {/* Register Button */}
               <MDBBtn className="mb-4 px-5" color='dark' size='lg' onClick={handleSubmit}>
                 Register
               </MDBBtn>
